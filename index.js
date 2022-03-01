@@ -1,17 +1,14 @@
 const inquirer = require('inquirer');
-require ('console.table');
-const connection = require('./connection')
-//const constructor = require('./constructor')
+const ctable = require ('console.table');
+const mysql = require('mysql2');
+const connection = require('./connection');
 
-//Function inquirer
-//const deptArray =[];
 
 // Starting function 
 const startingPrompt = () => {
     inquirer
     .prompt([
         {
-        // think update role is a bonus option
             type: 'list',
             message: 'What would you like to do?',
             name: 'menu',
@@ -111,7 +108,7 @@ function updateRole(){
             type: 'list',
             message: "Which employee's role do you want to update?",
             name: 'update',
-            choices:['MichaelScott', 'Roland Whitethorn', 'Louis Venuti','John Snow', 'Sansa Stark', 'Jaime Lannister', 'Taylor Swift', 'Pam Beesly', 'Leslie Nope', 'Jan Levins', 'Ann Perkins', 'Cassandra Clare', 'Daenerys Targaryan']
+            choices:['Katherine Barry','Cassandra Cain', 'Lee Child','Jon Duckett', 'John Grisham', 'Ibrham Kendi', 'Barbara Kingsolver', 'Martin Lawrence', 'Douglas Preston', 'Anna Quindlen', 'Jack Reacher', 'Ellen Ripley', 'Bruce Wayne']
         },
         {
             type: 'list',
