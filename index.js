@@ -81,7 +81,7 @@ inquirer
         type: 'list',
         message: "Who is the employee's manager?",
         name: 'mngr',
-        choices: ["None", 'Michael Scott', 'John Snow', 'Taylor Swift', 'Ann Perkins', ]
+        choices: ["None", 'Katherine Barry', 'John Grisham', 'Ibrham Kendi', 'Ellen Ripley', ]
     },
 ])
     .then(employeeData =>{
