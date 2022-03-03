@@ -3,18 +3,18 @@ CREATE DATABASE company_db;
 
 USE company_db;
 
-CREATE TABLE department (
+CREATE TABLE departments (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   dept_name VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE role (
+CREATE TABLE roles (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(30) NOT NULL,
   salary DECIMAL(10,4) NOT NULL,
   dept_id INT NOT NULL,
   FOREIGN KEY (dept_id)
-  REFERENCES department(id)
+  REFERENCES departments(id)
   ON DELETE CASCADE
 );
 
@@ -25,7 +25,7 @@ CREATE TABLE employees (
   role_id INT NOT NULL,
   manager_id INT ,
   FOREIGN KEY (role_id)
-  REFERENCES role(id),
+  REFERENCES roles(id),
   FOREIGN KEY (manager_id) 
   REFERENCES employees(id)
   ON DELETE CASCADE  

@@ -46,7 +46,7 @@ startingPrompt();
 
 // Function: VIEW all EMPLOYEES
 function viewAllEmployees(){
-    const sql = `SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.dept_name AS Departments, CONCAT (manager.first_name, ' ', manager.last_name) AS Manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id;`;
+    const sql = `SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.dept_name AS Departments, CONCAT (manager.first_name, ' ', manager.last_name) AS Manager FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.dept_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id;`;
     connection.query(sql, (err, rows) => {
       if (err) {
        console.log(err)
@@ -64,37 +64,37 @@ inquirer
     {
         type: 'input',
         message: "What is the employee's first name?",
-        name: 'first',
+        name: 'first_name',
     },
     {
         type: 'input',
         message: "What is the employee's last name?",
-        name: 'last',
+        name: 'last_name',
     },
     {
         type: 'list',
         message: "What is the employee's role?",
-        name: 'job',
-        choices: ["Account Manager", 'Salesperson', 'Lead Engineer', 'Software Engineer', 'Sales Lead', 'Accountant', 'Legal Team Lead', 'Lawyer', 'Customer Service']
+        name: 'role_id',
+        choices: [{name:"Account Manager",value: 1}, {name:'Salesperson',value:7}, {name:'Lead Engineer', value: 8},{name:'Software Engineer', value: 9}, { name:'Sales Manager', value: 6},{ name: 'Accountant', value: 2},{name: 'Legal Team Lead', value: 5},{name: 'Lawyer', value: 4},{ name: 'Customer Service', value: 3}]
     },
     {
         type: 'list',
         message: "Who is the employee's manager?",
-        name: 'mngr',
-        choices: ["None", 'Katherine Barry', 'John Grisham', 'Ibrham Kendi', 'Ellen Ripley', ]
+        name: 'manager_id',
+        choices: ["None", {name:'Katherine Barry', value: 1}, {name:'John Grisham', value: 2}, {name:'Ibrham Kendi', value: 3},{ name: 'Ellen Ripley', value:4}]
     },
 ])
     .then(employeeData =>{
     console.log(employeeData)
-    const sql = `INSERT INTO employees (first_name, last_name, salary, role);`;
-  const params = [employeeData.first_name, employeeData.last_name, employeeData.salary, employeeData.role];
+    const sql = `INSERT INTO employees (first_name, last_name,role_id, manager_id) VALUES(?,?,?,?)`;
+  const params = [employeeData.first_name, employeeData.last_name, employeeData.role_id,employeeData.manager_id];
   connection.query(sql, params, (err, rows) => {
      if (err) {
       console.log(err)
       return;
      }
     console.log(rows)
-    console.log(`Employee ${first_name} ${last_name} added successfully.`)
+    console.log(`Employee ${employeeData.first_name} ${employeeData.last_name} added successfully.`)
     startingPrompt()
   });
     })
@@ -108,19 +108,19 @@ function updateRole(){
             type: 'list',
             message: "Which employee's role do you want to update?",
             name: 'update',
-            choices:['Katherine Barry','Cassandra Cain', 'Lee Child','Jon Duckett', 'John Grisham', 'Ibrham Kendi', 'Barbara Kingsolver', 'Martin Lawrence', 'Douglas Preston', 'Anna Quindlen', 'Jack Reacher', 'Ellen Ripley', 'Bruce Wayne']
+            choices:[{name:'Katherine Barry',value:1},{name:'Cassandra Cain',value:5},{name: 'Lee Child', value:6},{name:'Jon Duckett',value:7},{name: 'John Grisham',vakue:2},{name: 'Ibrham Kendi', value:3},{name: 'Barbara Kingsolver', value:8},{name: 'Martin Lawrence', value:9},{name: 'Douglas Preston', value:10},{name: 'Anna Quindlen', value: 11},{name: 'Jack Reacher', value:12},{ name: 'Ellen Ripley', value:4},{ name: 'Bruce Wayne', value:13}]
         },
         {
             type: 'list',
             message: "Which role do you want to assign to selected employee?",
             name: 'up_role',
-            choices:["Account Manager", 'Accountant','Salesperson', 'Lead Engineer', 'Software Engineer', 'Sales Lead', 'Legal Team Lead', 'Lawyer', 'Customer Service']
+            choices:[{name:"Account Manager",value: 1}, {name:'Salesperson',value:7}, {name:'Lead Engineer', value: 8},{name:'Software Engineer', value: 9}, { name:'Sales Manager', value: 6},{ name: 'Accountant', value: 2},{name: 'Legal Team Lead', value: 5},{name: 'Lawyer', value: 4},{ name: 'Customer Service', value: 3}]
         },
     ])
     .then(employeeData =>{
         console.log(employeeData)
-    const sql = `UPDATE roles SET role = ? WHERE id = ?`;
-    const params = [req.body.role, req.params.id];
+    const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
+    const params = [employeeData.up_role, employeeData.update];
   
     connection.query(sql, params, (err, result) => {
       if (err) {
@@ -139,7 +139,7 @@ function updateRole(){
 
 // Function: VIEW all ROLES
 function viewAllRoles(){
-    const sql = `SELECT roles.title AS Roles, roles.id, roles.salary, departments.dept_name AS Departments FROM roles LEFT JOIN departments on roles.department_id = departments.id ORDER BY roles.title;`;
+    const sql = `SELECT roles.title AS Roles, roles.id, roles.salary, departments.dept_name AS Departments FROM roles LEFT JOIN departments on roles.dept_id = departments.id ORDER BY roles.title;`;
     connection.query(sql, (err, rows) => {
       if (err) {
        console.log(err)
@@ -157,7 +157,7 @@ inquirer
     {
         type: 'input',
         message: 'What is the name of the role?',
-        name: 'name',
+        name: 'title',
     },
     {
         type: 'input',
@@ -167,21 +167,21 @@ inquirer
     {
         type: 'list',
         message: 'Which department does the role belong to?',
-        name: 'select-dept',
-        choices: ['Engineering', 'Finance', 'Legal', 'Sales', 'Service']
+        name: 'dept_id',
+        choices: [{name:'Engineering', value: 1},{ name: 'Finance', value:2},{ name: 'Legal', value: 3},{name: 'Sales', value: 4},{name: 'Service', value:5}]
     },
 ])
     .then(roleData =>{
         console.log(roleData)
-        const sql = `INSERT INTO Roles (dept_name, salary, title)`; 
-    const params = [roleData.dept_name, roleData.title, roleData.salary];
+        const sql = `INSERT INTO roles ( title, salary,dept_id) VALUES(?,?,?)`; 
+    const params = [roleData.title, roleData.salary, roleData.dept_id];
     connection.query(sql, params, (err, rows) => {
      if (err) {
       console.log(err)
       return;
      }
     console.log(rows)
-    console.log(`Role ${title} added successfully.`)
+    console.log(`Role ${roleData.title} added successfully.`)
     startingPrompt()
     });
     })
@@ -209,12 +209,12 @@ inquirer
     {
         type: 'input',
         message: 'What is the name of the department?',
-        name: 'dept',
+        name: 'dept_name',
     },
 ])
     .then(departmentData =>{
         console.log(departmentData)
-        const sql = `INSERT INTO departments (dept_name)`;
+        const sql = `INSERT INTO departments (dept_name) Value(?)`;
     const params = [departmentData.dept_name];
     connection.query(sql, params, (err, rows) => {
      if (err) {
@@ -222,7 +222,7 @@ inquirer
       return;
      }
     console.log(rows)
-    console.log(`Department ${dept_name}added successfully.`)
+    console.log(`Department ${departmentData.dept_name}added successfully.`)
     startingPrompt()
   });
   })
